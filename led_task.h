@@ -1,13 +1,15 @@
 /******************************************************************************
  * \file    led_task.h
- * \version 1.0.0
+ * \version 2.1.0
  *
  * \brief
- * LED control task and visual feedback module for CY8CKIT-149.
+ * Multi-Mode LED visual controller for CY8CKIT-149.
  *
  * \details
- * Manages the 5-segment linear capacitive slider LEDs (P1.0, P1.2, P1.4, P1.6,
- * P2.0) and the blue User LED (P3.4).
+ * Supports multiple visual interaction modes:
+ *  - Mode 0 (Bargraph): Solid fill proportional to touch coordinate.
+ *  - Mode 1 (Dot Tracker): Single illuminated LED tracking fingertip.
+ *  - Mode 2 (Knight Rider / Wave): Active bounce animation modulated by touch speed.
  *
  * \copyright
  * (c) 2026, Infineon Technologies AG / Professional Embedded Engineering.
@@ -25,44 +27,66 @@
 extern "C" {
 #endif
 
-/* Total number of active slider segments mapped to LEDs */
 #define LED_SLIDER_SEGMENT_COUNT    (5u)
 
 /**
- * \brief Initialize all LED GPIO pins as strong drive outputs and turn them off.
+ * \brief Selectable visual display modes.
+ */
+typedef enum
+{
+    LED_MODE_BARGRAPH   = 0,  /**< Progressive bargraph fill */
+    LED_MODE_SINGLE_DOT = 1,  /**< Single dot cursor tracking */
+    LED_MODE_SCANNER    = 2,  /**< Larson / Knight Rider wave modulated by touch */
+    LED_MODE_MAX
+} led_mode_t;
+
+/**
+ * \brief Initialize LED GPIO pins and drive modes.
  */
 void led_init(void);
 
 /**
- * \brief Run power-on visual verification sweep across all slider LEDs.
+ * \brief Startup visual verification sweep.
  */
 void led_startup_sweep(void);
 
 /**
- * \brief Update slider bargraph LEDs based on current CapSense centroid.
+ * \brief Update slider LEDs based on current mode and touch coordinate.
  *
- * \param[in] position Centroid value (0 to 100), or 0 if untouched.
- * \param[in] is_touched True if an active touch is present on the slider.
+ * \param[in] position Centroid coordinate (0 to 100).
+ * \param[in] is_touched True if touch is currently detected.
  */
 void led_update_slider(uint16_t position, bool is_touched);
 
 /**
- * \brief Control the User LED (P3.4, Blue, Active-High).
+ * \brief Cycle to the next visual display mode.
  *
- * \param[in] state True = ON, False = OFF.
+ * \return New active led_mode_t.
+ */
+led_mode_t led_cycle_mode(void);
+
+/**
+ * \brief Retrieve current active display mode.
+ */
+led_mode_t led_get_mode(void);
+
+/**
+ * \brief Set specific display mode.
+ */
+void led_set_mode(led_mode_t mode);
+
+/**
+ * \brief Control blue User LED (P3.4).
  */
 void led_set_user(bool state);
 
 /**
- * \brief Toggle the User LED state (useful for heartbeats / tick indicators).
+ * \brief Toggle blue User LED.
  */
 void led_toggle_user(void);
 
 /**
- * \brief Flash all slider LEDs simultaneously (used for error / LTS alerts).
- *
- * \param[in] count Number of flashes.
- * \param[in] delay_ms Flash duration in milliseconds.
+ * \brief Flash all slider LEDs for error or mode change indication.
  */
 void led_flash_all(uint32_t count, uint32_t delay_ms);
 

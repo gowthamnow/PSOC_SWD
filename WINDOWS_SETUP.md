@@ -54,11 +54,42 @@ Before making any wire connections, verify the slide switches on the CY8CKIT-149
 
 ---
 
-## 3. Wiring: ST-LINK V2 Clone to J4 Debug Header
+## 3. Wiring: Programmer to J4 Debug Header
+
+You can use either the **Raspberry Pi Pico 2 (CMSIS-DAP v2)** or the **ST-LINK V2 clone**.
+
+### Option A: Raspberry Pi Pico 2 (RP2350 CMSIS-DAP) [Recommended]
+
+```
+   Raspberry Pi Pico 2 (RP2350)              CY8CKIT-149 J4 Header
+   +---------------------------+                  +---------+
+   | (Pin 4)  GP2 [SWCLK]      |----------------> |  Pin 4  | SWDCLK
+   | (Pin 5)  GP3 [SWDIO]      |<---------------> |  Pin 3  | SWDIO
+   | (Pin 38) GND              |----------------> |  Pin 2  | GND
+   | (Pin 36) 3V3(OUT)         |----------------> |  Pin 1  | VTARG (3.3V)
+   |                           |                  |         |
+   | (Pin 6)  GP4 [UART1_TX]   |---> (Optional Target UART_RX)
+   | (Pin 7)  GP5 [UART1_RX]   |<--- (Optional Target UART_TX -> COMx)
+   +---------------------------+                  +---------+
+```
+
+| Pico 2 Pin Name | Physical Pin | Target Signal | CY8CKIT-149 J4 Pin | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| **GP2** | **Pin 4** | `SWDCLK` | **Pin 4** | SWD Clock |
+| **GP3** | **Pin 5** | `SWDIO` | **Pin 3** | SWD Data Bidirectional |
+| **GND** | **Pin 38 or Pin 3** | `GND` | **Pin 2** | Common Ground |
+| **3V3(OUT)** | **Pin 36** | `VTARG` | **Pin 1** | Target 3.3V Power Supply |
+| *GP4* | *Pin 6* | *UART_RX* | *Optional* | UART transmit from probe |
+| *GP5* | *Pin 7* | *UART_TX* | *Optional* | Target serial monitor output |
+
+> [!NOTE]
+> CMSIS-DAP v2 uses standard native Microsoft WinUSB drivers. No Zadig or third-party drivers are required on Windows 10/11.
+
+---
+
+### Option B: ST-LINK V2 Clone
 
 The CY8CKIT-149 features a 10-pin 0.050" / 0.100" debug header labeled **J4** adjacent to the MCU.
-
-### Pinout Comparison & Connections
 
 ```
     ST-LINK V2 Clone (Pinout)            CY8CKIT-149 J4 Header

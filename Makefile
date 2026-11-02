@@ -238,3 +238,52 @@ probe-stlink:
 	  -f target/psoc4.cfg \
 	  -c "init; halt; flash probe 0; flash info 0; reset run; exit"
 
+# ==============================================================================
+# Custom Targets for Raspberry Pi Pico / Pico 2 (CMSIS-DAP v2) Programming
+# ==============================================================================
+.PHONY: flash-pico2 reset-pico2 halt-pico2 probe-pico2
+
+flash-pico2:
+	@echo "========================================================"
+	@echo " Flashing $(HEX_OUTPUT) via Raspberry Pi Pico 2..."
+	@echo "========================================================"
+	tools/openocd_win/xpack-openocd-0.12.0-7/bin/openocd.exe \
+	  -s tools/openocd_win/xpack-openocd-0.12.0-7/openocd/scripts \
+	  -f interface/cmsis-dap.cfg \
+	  -c "transport select swd" \
+	  -c "adapter speed 2000" \
+	  -c "set CPUTAPID 0x0bc11477" \
+	  -f target/psoc4.cfg \
+	  -c "init; halt; flash write_image erase $(HEX_OUTPUT); reset run; exit"
+	@echo "[+] Pico 2 Programming & Target Reset Complete!"
+
+probe-pico2:
+	tools/openocd_win/xpack-openocd-0.12.0-7/bin/openocd.exe \
+	  -s tools/openocd_win/xpack-openocd-0.12.0-7/openocd/scripts \
+	  -f interface/cmsis-dap.cfg \
+	  -c "transport select swd" \
+	  -c "adapter speed 2000" \
+	  -c "set CPUTAPID 0x0bc11477" \
+	  -f target/psoc4.cfg \
+	  -c "init; halt; flash probe 0; flash info 0; reset run; exit"
+
+reset-pico2:
+	tools/openocd_win/xpack-openocd-0.12.0-7/bin/openocd.exe \
+	  -s tools/openocd_win/xpack-openocd-0.12.0-7/openocd/scripts \
+	  -f interface/cmsis-dap.cfg \
+	  -c "transport select swd" \
+	  -c "adapter speed 2000" \
+	  -c "set CPUTAPID 0x0bc11477" \
+	  -f target/psoc4.cfg \
+	  -c "init; reset run; exit"
+
+halt-pico2:
+	tools/openocd_win/xpack-openocd-0.12.0-7/bin/openocd.exe \
+	  -s tools/openocd_win/xpack-openocd-0.12.0-7/openocd/scripts \
+	  -f interface/cmsis-dap.cfg \
+	  -c "transport select swd" \
+	  -c "adapter speed 2000" \
+	  -c "set CPUTAPID 0x0bc11477" \
+	  -f target/psoc4.cfg \
+	  -c "init; halt; reg; exit"
+

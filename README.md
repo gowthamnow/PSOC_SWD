@@ -1,41 +1,39 @@
-# Infineon CY8CKIT-149 PSoC 4100S Plus SWD Programming via ST-LINK V2 Clone
+# Infineon CY8CKIT-149 PSoC 4100S Plus SWD Programming via Raspberry Pi Pico 2 & ST-LINK V2
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Platform: Windows](https://img.shields.io/badge/Platform-Windows_10%2F11-0078D6.svg)](WINDOWS_SETUP.md)
+[![Programmer: Pico 2 (RP2350)](https://img.shields.io/badge/Programmer-Raspberry_Pi_Pico_2_(CMSIS--DAP)-purple.svg)](https://github.com/raspberrypi/debugprobe)
 [![MCU: PSoC 4100S Plus](https://img.shields.io/badge/MCU-CY8C4147AZI--S475-red.svg)](https://www.infineon.com)
 [![Toolchain: ModusToolbox](https://img.shields.io/badge/Toolchain-ModusToolbox_3.2%2B-green.svg)](https://www.infineon.com/modustoolbox)
-[![Programmer: ST-LINK V2](https://img.shields.io/badge/Programmer-ST--LINK_V2_Clone-orange.svg)](https://openocd.org)
 
-Production-grade Infineon ModusToolbox application featuring a **CapSense® 5-segment touch slider with LED bargraph tracking**, integrated **Long-Term Stability (LTS) diagnostics & hardware self-test suite**, and a turnkey **OpenOCD flashing pipeline using a low-cost ST-LINK V2 clone programmer**.
+Production-grade Infineon ModusToolbox application featuring a **CapSense® 5-segment touch slider with LED bargraph tracking**, integrated **Long-Term Stability (LTS) diagnostics & hardware self-test suite**, and turnkey **SWD flashing pipelines using either a Raspberry Pi Pico 2 (CMSIS-DAP v2) or an ST-LINK V2 clone**.
 
 > [!TIP]
-> **Windows Users**: For a complete, dedicated end-to-end walkthrough including USB drivers (Zadig/ST-Link), switch configurations, and 1-click batch flashing, see the **[Windows Setup & Flashing Guide (WINDOWS_SETUP.md)](WINDOWS_SETUP.md)**.
+> **Windows Users**: For a complete, dedicated end-to-end walkthrough including USB drivers, switch configurations, and 1-click batch flashing, see the **[Windows Setup & Flashing Guide (WINDOWS_SETUP.md)](WINDOWS_SETUP.md)**.
 
 ---
 
 ## Table of Contents
 1. [Overview](#overview)
-2. [Windows Full Setup Guide](WINDOWS_SETUP.md)
-3. [Hardware Setup & Wiring](#hardware-setup--wiring)
-4. [The ST-LINK V2 Clone Gotcha & Solution](#the-st-link-v2-clone-gotcha--solution)
-5. [Firmware Architecture](#firmware-architecture)
-6. [Long-Term Stability (LTS) & Self-Test Suite](#long-term-stability-lts--self-test-suite)
-7. [OpenOCD Technical Breakthroughs](#openocd-technical-breakthroughs)
-8. [Quick Start: Build & Flash](#quick-start-build--flash)
-9. [ModusShell Makefile Commands](#modusshell-makefile-commands)
-10. [Pre-compiled Binaries](#pre-compiled-binaries)
-11. [Roadmap](#roadmap)
+2. [Hardware Setup & Wiring](#hardware-setup--wiring)
+   - [Programmer Option 1: Raspberry Pi Pico 2 (RP2350 CMSIS-DAP)](#programmer-option-1-raspberry-pi-pico-2-rp2350-cmsis-dap-recommended)
+   - [Programmer Option 2: ST-LINK V2 Clone](#programmer-option-2-st-link-v2-clone)
+3. [The ST-LINK V2 Clone Gotcha & Solution](#the-st-link-v2-clone-gotcha--solution)
+4. [Firmware Architecture](#firmware-architecture)
+5. [Long-Term Stability (LTS) & Self-Test Suite](#long-term-stability-lts--self-test-suite)
+6. [OpenOCD Technical Breakthroughs](#openocd-technical-breakthroughs)
+7. [Quick Start: Build & Flash](#quick-start-build--flash)
+8. [ModusShell Makefile Commands](#modusshell-makefile-commands)
+9. [Pre-compiled Binaries](#pre-compiled-binaries)
 
 ---
 
 ## Overview
 
-The **Infineon CY8CKIT-149 PSoC 4100S Plus Prototyping Kit** is a versatile dual-silicon development platform featuring:
+The **Infineon CY8CKIT-149 PSoC 4100S Plus Prototyping Kit** features:
 * **Target MCU (U2)**: Infineon PSoC® 4100S Plus (`CY8C4147AZI-S475`, ARM® Cortex®-M0+ running at 48 MHz, 128 KB Flash, 16 KB SRAM).
 * **BLE Module (U3)**: EZ-BLE™ PRoC™ (`CYBLE-022001-00`).
 * **HMI Sensors**: 5-segment CapSense linear slider with 5 dedicated green LEDs (`P1.0`, `P1.2`, `P1.4`, `P1.6`, `P2.0`) and blue User LED (`P3.4`).
-
-Standard development typically relies on the on-board KitProg programmer via Micro-USB. This repository provides a complete, standalone build and SWD flashing workflow using a generic **ST-LINK V2 USB clone dongle** (VID:PID `0483:3748`), freeing developers from proprietary hardware bridges.
 
 ---
 
@@ -43,10 +41,53 @@ Standard development typically relies on the on-board KitProg programmer via Mic
 
 ### Switch Configurations on CY8CKIT-149
 * **SW4 (Debug Selection Switch)**: Set to **PSoC** position.  
-  * Connects the SWD lines of the 10-pin debug header (`J4`) to the PSoC 4100S Plus MCU (`U2`), completely bypassing the BLE module (`U3`).
-* **SW1 (Power Mode)**: Set to **Regulated** (or default factory position).
+  * Connects the SWD lines of the 10-pin debug header (`J4`) to the PSoC 4100S Plus MCU (`U2`), bypassing the BLE module.
+* **SW1 (Power Mode)**: Set to **Regulated**.
 
-### SWD Pin Mapping (ST-LINK V2 Clone to J4 Header)
+---
+
+### Programmer Option 1: Raspberry Pi Pico 2 (RP2350 CMSIS-DAP) [Recommended]
+
+The **Raspberry Pi Pico 2 (RP2350)** functions as a high-speed **CMSIS-DAP v2 hardware debug probe** with a built-in USB-to-UART serial bridge (enumerating natively on Windows as `COMx` with zero custom driver installs required).
+
+```
+   Raspberry Pi Pico 2 (RP2350)              CY8CKIT-149 J4 Header
+   +---------------------------+                  +---------+
+   | (Pin 4)  GP2 [SWCLK]      |----------------> |  Pin 4  | SWDCLK
+   | (Pin 5)  GP3 [SWDIO]      |<---------------> |  Pin 3  | SWDIO
+   | (Pin 38) GND              |----------------> |  Pin 2  | GND
+   | (Pin 36) 3V3(OUT)         |----------------> |  Pin 1  | VTARG (3.3V)
+   |                           |                  |         |
+   | (Pin 6)  GP4 [UART1_TX]   |---> (Optional Target UART_RX)
+   | (Pin 7)  GP5 [UART1_RX]   |<--- (Optional Target UART_TX)
+   +---------------------------+                  +---------+
+```
+
+#### Pin Mapping Table (Pico 2 to J4 Header)
+
+| Pico 2 Pin Name | Pico 2 Physical Pin | Target Signal | CY8CKIT-149 J4 Pin | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| **GP2** | **Pin 4** | `SWDCLK` | **Pin 4** | SWD Clock |
+| **GP3** | **Pin 5** | `SWDIO` | **Pin 3** | SWD Data Bidirectional |
+| **GND** | **Pin 38 or Pin 3** | `GND` | **Pin 2** | Common Ground |
+| **3V3(OUT)** | **Pin 36** | `VTARG` | **Pin 1** | Target 3.3V Power Supply |
+| *GP4 (UART TX)* | *Pin 6* | *UART_RX* | *Optional* | Debug Probe to Target TX |
+| *GP5 (UART RX)* | *Pin 7* | *UART_TX* | *Optional* | Target to Serial Monitor |
+
+> [!TIP]
+> To configure the Pico 2, simply copy [`tools/debugprobe_on_pico2.uf2`](tools/debugprobe_on_pico2.uf2) to the Pico 2 USB drive (`RP2350`) in BOOTSEL mode. It will automatically flash and reboot as a CMSIS-DAP probe.
+
+---
+
+### Programmer Option 2: ST-LINK V2 Clone
+
+| ST-LINK V2 Clone Pin | CY8CKIT-149 J4 Header | Signal Name | Description |
+| :--- | :--- | :--- | :--- |
+| **Pin 2 (SWCLK)** | **Pin 4** | `SWDCLK` | SWD Serial Clock |
+| **Pin 4 (SWDIO)** | **Pin 3** | `SWDIO` | SWD Serial Data I/O |
+| **Pin 6 (GND)** | **Pin 2** | `GND` | Common Ground Reference |
+| **Pin 8 (3.3V)** | **Pin 1** | `VTARG / VDD` | 3.3V Power Supply from ST-LINK |
+| **Pin 10 (RST)** | **DO NOT CONNECT** | `XRES` | **Must remain disconnected!** |
 
 | ST-LINK V2 Clone Pin | CY8CKIT-149 J4 Header | Signal Name | Description |
 | :--- | :--- | :--- | :--- |

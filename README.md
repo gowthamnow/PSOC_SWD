@@ -184,31 +184,46 @@ This repository provides:
 
 ## Quick Start: Build & Flash
 
+### Terminal Output Verification
+
+#### 1. Live Flashing via Raspberry Pi Pico 2 (CMSIS-DAP)
+![Raspberry Pi Pico 2 CMSIS-DAP Flashing Terminal Output](images/terminal_flash_pico2.png)
+
+#### 2. ModusToolbox Build Pipeline
+![ModusToolbox Build Output](images/terminal_build_complete.png)
+
+---
+
 ### Prerequisites
 * [ModusToolbox 3.x](https://www.infineon.com/modustoolbox) with ModusShell
-* [OpenOCD](https://openocd.org) (v0.12.0 or higher)
-* [usbipd-win](https://github.com/dorssel/usbipd-win) (if running OpenOCD inside WSL2)
+* [OpenOCD](https://openocd.org) (bundled pre-patched binary included in `tools/openocd_win/`)
 
-### Option A: Using ModusShell (Windows / Cygwin)
-Open **ModusShell**, navigate to the project directory, and run:
+### Option A: Using Raspberry Pi Pico 2 [Fastest - No Drivers Required]
+1. Wire Pico 2 (`GP2` -> SWCLK, `GP3` -> SWDIO, `GND` -> GND, `3V3(OUT)` -> Pin 1 VTARG).
+2. Double-click or run:
+   ```cmd
+   tools\scripts\flash_pico2_dap.bat
+   ```
+   Or via ModusShell:
+   ```bash
+   make flash-pico2
+   ```
 
+### Option B: Using ST-LINK V2 Clone
+1. Wire ST-LINK (`SWCLK`, `SWDIO`, `GND`, `3.3V` — **leave `RST` disconnected**).
+2. Run:
+   ```cmd
+   tools\scripts\flash_stlink.bat
+   ```
+   Or via ModusShell:
+   ```bash
+   make flash-stlink
+   ```
+
+### Option C: Standalone Linux / WSL Script
 ```bash
-# 1. Compile the firmware
-make build
-
-# 2. Flash to CY8CKIT-149 via ST-LINK V2
-make flash-stlink
-```
-
-### Option B: Standalone Script (Windows Command Prompt / PowerShell)
-```cmd
-tools\scripts\flash_stlink.bat
-```
-
-### Option C: Standalone Script (Linux / WSL)
-```bash
-chmod +x tools/scripts/flash_stlink.sh
-./tools/scripts/flash_stlink.sh
+chmod +x tools/scripts/flash_pico2_dap.sh
+./tools/scripts/flash_pico2_dap.sh
 ```
 
 ---
@@ -217,12 +232,14 @@ chmod +x tools/scripts/flash_stlink.sh
 
 | Command | Action |
 | :--- | :--- |
-| `make build` | Compiles source files into ELF and HEX binaries |
+| `make build` | Compiles source files into ELF and HEX binaries (`-j8` multi-core supported) |
 | `make clean` | Cleans build artifacts |
-| `make flash-stlink` | Programs the application into PSoC 4 flash via ST-LINK and resets target |
-| `make probe-stlink` | Reads target voltage, verifies Cortex-M0+ core ID, and probes 128 KiB flash |
-| `make reset-stlink` | Issues a software reset and starts firmware execution |
-| `make halt-stlink` | Halts CPU and reads core registers (`xPSR`, `PC`, `MSP`) |
+| `make flash-pico2` | Programs firmware via **Raspberry Pi Pico 2** CMSIS-DAP v2 interface and resets MCU |
+| `make probe-pico2` | Probes target voltage, Cortex-M0+ core ID, and flash memory via Pico 2 |
+| `make reset-pico2` | Software reset of PSoC 4 via Pico 2 |
+| `make flash-stlink` | Programs firmware via **ST-LINK V2 clone** and resets MCU |
+| `make probe-stlink` | Probes target via ST-LINK V2 |
+| `make reset-stlink` | Software reset of PSoC 4 via ST-LINK |
 
 ---
 

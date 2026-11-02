@@ -1,19 +1,27 @@
 @echo off
 REM ==============================================================================
 REM Universal Windows Flashing Script for CY8CKIT-149 with ST-LINK V2
-REM Supports native Windows OpenOCD, xPack OpenOCD, or automatic WSL2 fallback
+REM Supports native Windows OpenOCD, bundled OpenOCD, or automatic WSL2 fallback
 REM ==============================================================================
 
 setlocal enabledelayedexpansion
 
 set SCRIPT_DIR=%~dp0
 set REPO_ROOT=%SCRIPT_DIR%..\..
-set HEX_FILE=%REPO_ROOT%\binaries\mtb-example-psoc4-hello-world.hex
 
-REM If built locally, prefer fresh build binary
+for %%i in ("%REPO_ROOT%\binaries\mtb-example-psoc4-hello-world.hex") do set HEX_FILE=%%~fi
 if exist "%REPO_ROOT%\build\APP_CY8CKIT-149\Debug\mtb-example-psoc4-hello-world.hex" (
-    set HEX_FILE=%REPO_ROOT%\build\APP_CY8CKIT-149\Debug\mtb-example-psoc4-hello-world.hex
+    for %%i in ("%REPO_ROOT%\build\APP_CY8CKIT-149\Debug\mtb-example-psoc4-hello-world.hex") do set HEX_FILE=%%~fi
 )
+
+set OPENOCD_HEX=!HEX_FILE:\=/!
+
+for %%i in ("%REPO_ROOT%\tools\openocd_win\xpack-openocd-0.12.0-7\bin\openocd.exe") do set OPENOCD_EXE=%%~fi
+for %%i in ("%REPO_ROOT%\tools\openocd_win\xpack-openocd-0.12.0-7\openocd\scripts") do set SCRIPTS_DIR=%%~fi
+set OPENOCD_SCRIPTS=!SCRIPTS_DIR:\=/!
+
+for %%i in ("%REPO_ROOT%\tools\openocd\interface\stlink.cfg") do set STLINK_CFG=%%~fi
+set OPENOCD_STLINK_CFG=!STLINK_CFG:\=/!
 
 if not exist "%HEX_FILE%" (
     echo [ERROR] Firmware hex file not found: %HEX_FILE%
@@ -24,36 +32,35 @@ if not exist "%HEX_FILE%" (
 echo ====================================================================
 echo  Infineon CY8CKIT-149 PSoC 4100S Plus ST-LINK V2 Flashing Utility
 echo ====================================================================
-echo Firmware: %HEX_FILE%
+echo Firmware: %OPENOCD_HEX%
 echo.
 
-REM 1. Check for native Windows openocd.exe in PATH
+if exist "%OPENOCD_EXE%" (
+    echo [*] Using bundled Windows OpenOCD with PSoC 4100S+ support...
+    "%OPENOCD_EXE%" -s "%OPENOCD_SCRIPTS%" ^
+      -f "%OPENOCD_STLINK_CFG%" ^
+      -c "set CPUTAPID 0x0bc11477" ^
+      -f target/psoc4.cfg ^
+      -c "init" ^
+      -c "halt" ^
+      -c "flash write_image erase %OPENOCD_HEX%" ^
+      -c "reset run" ^
+      -c "exit"
+    goto check_result
+)
+
 where openocd >nul 2>&1
 if %ERRORLEVEL% equ 0 (
     echo [*] Detected native Windows OpenOCD. Flashing directly...
     openocd -f interface/stlink.cfg -c "set CPUTAPID 0x0bc11477" -f target/psoc4.cfg ^
       -c "init" ^
       -c "halt" ^
-      -c "flash write_image erase \"%HEX_FILE%\"" ^
+      -c "flash write_image erase %OPENOCD_HEX%" ^
       -c "reset run" ^
       -c "exit"
     goto check_result
 )
 
-REM 2. Check for xPack OpenOCD in common default directories
-set XPACK_PATH=C:\xpack-openocd\bin\openocd.exe
-if exist "%XPACK_PATH%" (
-    echo [*] Detected xPack OpenOCD at %XPACK_PATH%. Flashing...
-    "%XPACK_PATH%" -f interface/stlink.cfg -c "set CPUTAPID 0x0bc11477" -f target/psoc4.cfg ^
-      -c "init" ^
-      -c "halt" ^
-      -c "flash write_image erase \"%HEX_FILE%\"" ^
-      -c "reset run" ^
-      -c "exit"
-    goto check_result
-)
-
-REM 3. Fallback: Check if WSL2 is installed and has OpenOCD
 where wsl >nul 2>&1
 if %ERRORLEVEL% equ 0 (
     echo [*] OpenOCD not found in Windows PATH. Attempting WSL2 execution...
@@ -63,13 +70,6 @@ if %ERRORLEVEL% equ 0 (
 )
 
 echo [!] OpenOCD was not found on your Windows system.
-echo.
-echo Please do one of the following:
-echo   1. Install xPack OpenOCD from: https://github.com/xpack-dev-tools/openocd-xpack/releases
-echo      and add its 'bin' directory to your Windows PATH.
-echo   2. Or install Zadig (https://zadig.akeo.ie) and use WSL2 with usbipd-win.
-echo.
-echo See WINDOWS_SETUP.md for complete step-by-step instructions.
 pause
 exit /b 1
 

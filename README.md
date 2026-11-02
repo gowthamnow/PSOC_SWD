@@ -1,25 +1,30 @@
 # Infineon CY8CKIT-149 PSoC 4100S Plus SWD Programming via ST-LINK V2 Clone
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![Platform: Windows](https://img.shields.io/badge/Platform-Windows_10%2F11-0078D6.svg)](WINDOWS_SETUP.md)
 [![MCU: PSoC 4100S Plus](https://img.shields.io/badge/MCU-CY8C4147AZI--S475-red.svg)](https://www.infineon.com)
 [![Toolchain: ModusToolbox](https://img.shields.io/badge/Toolchain-ModusToolbox_3.2%2B-green.svg)](https://www.infineon.com/modustoolbox)
 [![Programmer: ST-LINK V2](https://img.shields.io/badge/Programmer-ST--LINK_V2_Clone-orange.svg)](https://openocd.org)
 
 Production-grade Infineon ModusToolbox application featuring a **CapSense® 5-segment touch slider with LED bargraph tracking**, integrated **Long-Term Stability (LTS) diagnostics & hardware self-test suite**, and a turnkey **OpenOCD flashing pipeline using a low-cost ST-LINK V2 clone programmer**.
 
+> [!TIP]
+> **Windows Users**: For a complete, dedicated end-to-end walkthrough including USB drivers (Zadig/ST-Link), switch configurations, and 1-click batch flashing, see the **[Windows Setup & Flashing Guide (WINDOWS_SETUP.md)](WINDOWS_SETUP.md)**.
+
 ---
 
 ## Table of Contents
 1. [Overview](#overview)
-2. [Hardware Setup & Wiring](#hardware-setup--wiring)
-3. [The ST-LINK V2 Clone Gotcha & Solution](#the-st-link-v2-clone-gotcha--solution)
-4. [Firmware Architecture](#firmware-architecture)
-5. [Long-Term Stability (LTS) & Self-Test Suite](#long-term-stability-lts--self-test-suite)
-6. [OpenOCD Technical Breakthroughs](#openocd-technical-breakthroughs)
-7. [Quick Start: Build & Flash](#quick-start-build--flash)
-8. [ModusShell Makefile Commands](#modusshell-makefile-commands)
-9. [Pre-compiled Binaries](#pre-compiled-binaries)
-10. [Roadmap](#roadmap)
+2. [Windows Full Setup Guide](WINDOWS_SETUP.md)
+3. [Hardware Setup & Wiring](#hardware-setup--wiring)
+4. [The ST-LINK V2 Clone Gotcha & Solution](#the-st-link-v2-clone-gotcha--solution)
+5. [Firmware Architecture](#firmware-architecture)
+6. [Long-Term Stability (LTS) & Self-Test Suite](#long-term-stability-lts--self-test-suite)
+7. [OpenOCD Technical Breakthroughs](#openocd-technical-breakthroughs)
+8. [Quick Start: Build & Flash](#quick-start-build--flash)
+9. [ModusShell Makefile Commands](#modusshell-makefile-commands)
+10. [Pre-compiled Binaries](#pre-compiled-binaries)
+11. [Roadmap](#roadmap)
 
 ---
 

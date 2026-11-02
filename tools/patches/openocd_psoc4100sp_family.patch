@@ -1,0 +1,10 @@
+--- a/src/flash/nor/psoc4.c
++++ b/src/flash/nor/psoc4.c
+@@ -107,6 +107,7 @@
+ 	{ 0xa2, "PSoC 4200M" },
+ 	{ 0xa6, "PSoC 4000S" },
+ 	{ 0xab, "PSoC 4100S" },
++	{ 0xb5, "PSoC 4100S Plus" },
+ 	{ 0xac, "PSoC Analog Coprocessor" },
+ 	{ 0xae, "PSoC 4000S" },
+ 	{ 0xb0, "PSoC 4100S" },

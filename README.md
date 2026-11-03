@@ -135,13 +135,18 @@ chmod +x tools/scripts/flash_pico2_dap.sh
 
 The **Raspberry Pi Pico 2 (RP2350)** running official Debugprobe firmware acts as a high-speed **CMSIS-DAP v2 probe** and USB-to-UART bridge. It uses native Microsoft WinUSB drivers on Windows 10/11 with zero third-party driver installations.
 
+#### Physical Hardware Test Setup
+The live physical bench verification setup using the Raspberry Pi Pico 2 wired to the CY8CKIT-149 target J4 header:
+
+![Raspberry Pi Pico 2 Wired to CY8CKIT-149 J4 SWD Header](images/pico2_cy8ckit149_wiring.jpg)
+
 ```text
    Raspberry Pi Pico 2 (RP2350)                 CY8CKIT-149 J4 Header
    +----------------------------+                    +---------+
-   | (Pin 4)  GP2 [SWCLK]       |------------------> |  Pin 4  | SWDCLK
-   | (Pin 5)  GP3 [SWDIO]       |<-----------------> |  Pin 3  | SWDIO
-   | (Pin 38) GND               |------------------> |  Pin 2  | GND
-   | (Pin 36) 3V3(OUT) [Power]  |------------------> |  Pin 1  | VTARG (3.3V)
+   | (Pin 4)  GP2 [SWCLK]       |------------------> |  Pin 4  | SWDCLK (Yellow wire)
+   | (Pin 5)  GP3 [SWDIO]       |<-----------------> |  Pin 3  | SWDIO  (Green wire)
+   | (Pin 38) GND               |------------------> |  Pin 2  | GND    (Green/Black wire)
+   | (Pin 36) 3V3(OUT) [Power]  |------------------> |  Pin 1  | VTARG  (Red wire, 3.3V)
    |                            |                    |         |
    | (Pin 6)  GP4 [UART1_TX]    |---> (Optional Target UART_RX)
    | (Pin 7)  GP5 [UART1_RX]    |<--- (Optional Target UART_TX -> COMx)
@@ -332,6 +337,9 @@ tools\scripts\flash_stlink.bat
 ---
 
 ## Terminal Verification Screenshots
+
+### Physical Bench Setup: Raspberry Pi Pico 2 Connected to CY8CKIT-149
+![Raspberry Pi Pico 2 Physical Test Bench Setup](images/pico2_cy8ckit149_wiring.jpg)
 
 ### Live Hardware Flash via Raspberry Pi Pico 2 (CMSIS-DAP v2)
 Shows OpenOCD connecting over CMSIS-DAP v2 at 2000 kHz, acquiring the Cortex®-M0+ core (`0x0bc11477`), identifying 128 KiB flash, programming 21,744 bytes in 3.48 seconds, and resetting into run mode:

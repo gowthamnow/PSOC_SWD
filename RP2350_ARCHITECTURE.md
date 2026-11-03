@@ -142,13 +142,18 @@ USB Device Descriptor (VID: 0x2E8A, PID: 0x000C)
 
 ## 6. Hardware Signal Flow & Pin Routing
 
+### Physical Test Bench Wiring
+The physical hardware setup showing Raspberry Pi Pico 2 connected to the target CY8CKIT-149 J4 debug header:
+
+![Raspberry Pi Pico 2 Physical Test Bench Wiring to CY8CKIT-149](images/pico2_cy8ckit149_wiring.jpg)
+
 ```text
        Raspberry Pi Pico 2 (RP2350)                 CY8CKIT-149 J4 Debug Header
       +----------------------------+                     +---------+
-      | (Pin 4)  GP2 [SWCLK]       |-------------------> |  Pin 4  | SWDCLK
-      | (Pin 5)  GP3 [SWDIO]       |<------------------> |  Pin 3  | SWDIO
-      | (Pin 38) GND               |-------------------> |  Pin 2  | GND
-      | (Pin 36) 3V3(OUT) [Power]  |-------------------> |  Pin 1  | VTARG (3.3V)
+      | (Pin 4)  GP2 [SWCLK]       |-------------------> |  Pin 4  | SWDCLK (Yellow wire)
+      | (Pin 5)  GP3 [SWDIO]       |<------------------> |  Pin 3  | SWDIO  (Green wire)
+      | (Pin 38) GND               |-------------------> |  Pin 2  | GND    (Green/Black wire)
+      | (Pin 36) 3V3(OUT) [Power]  |-------------------> |  Pin 1  | VTARG  (Red wire, 3.3V)
       |                            |                     |         |
       | (Pin 6)  GP4 [UART1_TX]    |---> (Optional Target UART_RX)
       | (Pin 7)  GP5 [UART1_RX]    |<--- (Optional Target UART_TX -> COM8)

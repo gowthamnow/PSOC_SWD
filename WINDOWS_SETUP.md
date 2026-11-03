@@ -60,13 +60,15 @@ You can use either the **Raspberry Pi Pico 2 (CMSIS-DAP v2)** or the **ST-LINK V
 
 ### Option A: Raspberry Pi Pico 2 (RP2350 CMSIS-DAP) [Recommended]
 
+![Physical Bench Test Setup: Raspberry Pi Pico 2 Connected to CY8CKIT-149](images/pico2_cy8ckit149_wiring.jpg)
+
 ```
    Raspberry Pi Pico 2 (RP2350)              CY8CKIT-149 J4 Header
    +---------------------------+                  +---------+
-   | (Pin 4)  GP2 [SWCLK]      |----------------> |  Pin 4  | SWDCLK
-   | (Pin 5)  GP3 [SWDIO]      |<---------------> |  Pin 3  | SWDIO
-   | (Pin 38) GND              |----------------> |  Pin 2  | GND
-   | (Pin 36) 3V3(OUT)         |----------------> |  Pin 1  | VTARG (3.3V)
+   | (Pin 4)  GP2 [SWCLK]      |----------------> |  Pin 4  | SWDCLK (Yellow wire)
+   | (Pin 5)  GP3 [SWDIO]      |<---------------> |  Pin 3  | SWDIO  (Green wire)
+   | (Pin 38) GND              |----------------> |  Pin 2  | GND    (Green/Black wire)
+   | (Pin 36) 3V3(OUT)         |----------------> |  Pin 1  | VTARG  (Red wire, 3.3V)
    |                           |                  |         |
    | (Pin 6)  GP4 [UART1_TX]   |---> (Optional Target UART_RX)
    | (Pin 7)  GP5 [UART1_RX]   |<--- (Optional Target UART_TX -> COMx)

@@ -6,11 +6,13 @@
 [![Kit: CY8CKIT-149](https://img.shields.io/badge/Kit-CY8CKIT--149-orange.svg)](https://www.infineon.com/CY8CKIT-149)
 [![Toolchain: ModusToolbox™](https://img.shields.io/badge/Toolchain-ModusToolbox™_3.2%2B-green.svg)](https://www.infineon.com/modustoolbox)
 [![CMSIS-DAP: Pico 2](https://img.shields.io/badge/CMSIS--DAP-Raspberry_Pi_Pico_2-purple.svg)](https://github.com/raspberrypi/debugprobe)
+[![Architecture: RP2350 Technical Whitepaper](https://img.shields.io/badge/Architecture-RP2350_Whitepaper-informational.svg)](RP2350_ARCHITECTURE.md)
 
 Production-grade Infineon ModusToolbox™ code example demonstrating hardware-accelerated **CAPSENSE™ 5-segment linear slider sensing with a multi-mode LED visual engine**, integrated **Long-Term Stability (LTS) self-test diagnostics**, and an open-source **external SWD flashing pipeline using either a Raspberry Pi Pico 2 (CMSIS-DAP v2) or an ST-LINK V2 clone**.
 
 > [!TIP]
-> **Windows Developers**: For driver installation (WinUSB / Zadig), detailed device manager checklists, and one-click batch scripts, refer to the **[Windows Setup & Flashing Guide (WINDOWS_SETUP.md)](WINDOWS_SETUP.md)**.
+> * **Windows Developers**: For driver installation (WinUSB / Zadig), detailed device manager checklists, and one-click batch scripts, refer to the **[Windows Setup & Flashing Guide (WINDOWS_SETUP.md)](WINDOWS_SETUP.md)**.
+> * **Hardware Architecture Deep-Dive**: For an in-depth analysis of the RP2350/RP2354 silicon architecture, PIO-driven SWD timing generation, and CMSIS-DAP v2 bulk transport, refer to the **[RP2350 Technical Whitepaper (RP2350_ARCHITECTURE.md)](RP2350_ARCHITECTURE.md)**.
 
 ---
 
@@ -26,8 +28,10 @@ Production-grade Infineon ModusToolbox™ code example demonstrating hardware-ac
 6. [Interactive Operating Modes Tutorial](#interactive-operating-modes-tutorial)
 7. [Long-Term Stability (LTS) & Automated Self-Test](#long-term-stability-lts--automated-self-test)
 8. [Engineering Insights: External SWD on PSoC™ 4100S Plus](#engineering-insights-external-swd-on-psoc-4100s-plus)
-9. [Build & Programming Commands](#build--programming-commands)
-10. [Terminal Verification Screenshots](#terminal-verification-screenshots)
+9. [RP2350 Probe Architecture & Working Principles (Whitepaper)](RP2350_ARCHITECTURE.md)
+10. [Build & Programming Commands](#build--programming-commands)
+11. [Terminal Verification Screenshots](#terminal-verification-screenshots)
+12. [References & Related Documents](#references--related-documents)
 11. [References & Related Documents](#references--related-documents)
 
 ---
